@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<title>Dungeoneer</title>
+	<link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
+	<link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<div id="gridContainer"></div>
+<h1>Dungeoneer</h1>
+
+<script>
+	const numCols = 25;
+	const numRows = 25;
+	const cellWidth = 25;
+	const cellSpacing = 0;
+	
+	const container = document.querySelector("#gridContainer");
+	
+	const span = document.createElement('span');
+	span.className = 'cell';
+	
+	const cells = [];
+	let playerLocation = []
+	
+	for (let row = 0; row < numRows; row++){
+		cells.push([]);
+		for (let col = 0; col < numCols; col++) {
+			let cell = span.cloneNode();
+			cell.style.left = `${col * (cellWidth + cellSpacing)}px`;
+			cell.style.top = `${row * (cellWidth + cellSpacing)}px`;
+			cell.style.textAlign = "center";
+			cell.style.fontSize = "20px";
+			cell.style.fontWeight = "bold";
+			cell.style.backgroundColor = "#ccc";
+			container.appendChild(cell);
+			cells[row][col] = cell;
+		}
+	}
+	
+	init();
+	
+	function init()
+	{
+		for (let i = 0; i < numCols; i++)
+		{
+				cells[i][0].style.backgroundColor = "black";
+				cells[i][numRows-1].style.backgroundColor = "black";
+		}
+		for (let i = 0; i < numRows; i++)
+		{
+				cells[0][i].style.backgroundColor = "black";
+				cells[numRows-1][i].style.backgroundColor = "black";
+		}
+		cells[10][10].style.backgroundColor = "black";
+		cells[3][15].style.backgroundColor = "black";
+		cells[23][12].style.backgroundColor = "black";
+		playerLocation = [Math.floor(numCols/2), Math.floor(numRows/2)];
+		SpawnPlayer(playerLocation[0], playerLocation[1]);
+	}
+	
+	function SpawnPlayer(col, row)
+	{
+		let cell = cells[col][row];
+		cell.innerHTML = "@";
+		cell.style.color = "blue";
+	}	
+	
+	function RemovePlayer(col, row)
+	{
+		let cell = cells[col][row];
+		cell.innerHTML = "";
+		cell.style.color = "white";
+	}
+	
+	document.addEventListener("keydown", e => {
+		let key = e.key;
+		let nextTile;
+		switch (key)
+		{
+			case "ArrowDown":
+				nextTile = [playerLocation[0]+1,playerLocation[1]];
+				break;
+			
+			case "ArrowUp":
+				nextTile = [playerLocation[0]-1,playerLocation[1]];
+				break;
+			
+			case "ArrowLeft":
+				nextTile = [playerLocation[0],playerLocation[1]-1];
+				break;
+				
+			case "ArrowRight":
+				nextTile = [playerLocation[0],playerLocation[1]+1];
+				break;
+		}
+		switch(cells[nextTile[0]][nextTile[1]].style.backgroundColor)
+		{
+			case "rgb(204, 204, 204)":
+				switch(cells[nextTile[0]][nextTile[1]].innerHTML)
+				{
+					case "":
+						RemovePlayer(playerLocation[0],playerLocation[1]);
+						playerLocation = nextTile;
+						SpawnPlayer(playerLocation[0],playerLocation[1]);
+						break;
+					case "#":
+						//fight enemy
+						break;
+					case "$":
+						//points++
+						break;
+				}	
+		}
+	});
+
+	//<select id="colorChooser">
+	//<option value="aqua">Aqua</option>
+	//<option value="Bisque">Bisque</option>
+	//<option value="black">Black</option>
+	//<option value="blue">Blue</option>
+	//<option value="brown">Brown</option>
+	//<option value="chocolate">Chocolate</option>
+	//<option value="cyan">Cyan</option>
+	//<option value="DarkGray">Dark Gray</option>
+	//<option value="green">Green</option>
+	//<option value="red" selected>Red</option>
+	//<option value="magenta">Magenta</option>
+	//<option value="orange">Orange</option>
+	//<option value="tan">Tan</option>
+	//<option value="white">White</option>
+	//<option value="wheat">Wheat</option>
+	//<option value="WhiteSmoke">WhiteSmoke </option>
+	//<option value="yellow">Yellow</option>
+	//</select>
+</script>
+</body>
+</html>
